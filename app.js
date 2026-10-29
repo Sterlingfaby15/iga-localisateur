@@ -5,42 +5,50 @@ fetch("produits.json")
   .then(response => response.json())
   .then(data => {
     produits = data;
-  })
-  .catch(error => {
-    console.error("Erreur chargement JSON :", error);
   });
 
 function searchProduct() {
 
-  const recherche = document
-    .getElementById("search")
-    .value
-    .toLowerCase()
-    .trim();
+  const recherche =
+    document
+      .getElementById("search")
+      .value
+      .toLowerCase()
+      .trim();
 
-  const results = document.getElementById("results");
+  const results =
+    document.getElementById("results");
 
   results.innerHTML = "";
 
-  if (!recherche) {
-    return;
-  }
+  if (!recherche) return;
 
-  const produitsTrouves = produits.filter(p => {
+  const produitsTrouves =
+    produits.filter(p => {
 
-    const nom = (p.nom || "").toLowerCase();
-    const upc = String(p.upc || "");
-    const marque = (p.marque || "").toLowerCase();
-    const categorie = (p.categorie || "").toLowerCase();
+      return (
+        (p.nom || "")
+          .toLowerCase()
+          .includes(recherche)
 
-    return (
-      nom.includes(recherche) ||
-      upc.includes(recherche) ||
-      marque.includes(recherche) ||
-      categorie.includes(recherche)
-    );
+        ||
 
-  });
+        String(p.upc || "")
+          .includes(recherche)
+
+        ||
+
+        (p.marque || "")
+          .toLowerCase()
+          .includes(recherche)
+
+        ||
+
+        (p.categorie || "")
+          .toLowerCase()
+          .includes(recherche)
+      );
+    });
 
   if (produitsTrouves.length === 0) {
 
@@ -66,15 +74,16 @@ function searchProduct() {
         <h3>${p.nom}</h3>
 
         <div class="marque">
-          🏷️ ${p.marque || "N/D"}
+          🏷️ ${p.marque || "-"}
         </div>
 
         <div class="categorie">
-          ${p.categorie || "Non catégorisé"}
+          ${p.categorie || "-"}
         </div>
 
         <div class="loc">
-          ${direction}<br>
+          ${direction}
+          <br>
           ALLÉE ${p.allee}
         </div>
 
@@ -95,45 +104,28 @@ function searchProduct() {
 
 async function startScanner() {
 
-  const reader = document.getElementById("reader");
+  if (scanner) return;
 
-  if (scanner) {
-
-    try {
-      await scanner.stop();
-      await scanner.clear();
-    } catch (e) {}
-
-    scanner = null;
-    reader.innerHTML = "";
-    return;
-
-  }
-
-  scanner = new Html5Qrcode("reader");
+  scanner =
+    new Html5Qrcode("reader");
 
   try {
 
     await scanner.start(
-      {
-        facingMode: "environment"
-      },
+      { facingMode: "environment" },
       {
         fps: 10,
-        qrbox: {
-          width: 250,
-          height: 250
-        }
+        qrbox: 250
       },
 
-      (decodedText) => {
+      (code) => {
 
         document.getElementById("search").value =
-          decodedText;
+          code;
 
         searchProduct();
 
-        if ("vibrate" in navigator) {
+        if (navigator.vibrate) {
           navigator.vibrate(200);
         }
 
@@ -144,7 +136,7 @@ async function startScanner() {
       () => {}
     );
 
-  } catch (error) {
+  } catch(error) {
 
     console.error(error);
 
@@ -158,29 +150,39 @@ async function startScanner() {
 
 async function stopScanner() {
 
-  if (!scanner) {
-    return;
-  }
+  if (!scanner) return;
 
   try {
 
     await scanner.stop();
     await scanner.clear();
 
-  } catch (e) {}
+  } catch(e) {}
 
   scanner = null;
 
-  document.getElementById("reader").innerHTML = "";
+}
+
+function toggleTheme(){
+
+  document.body.classList.toggle("dark");
+
+  localStorage.setItem(
+    "darkMode",
+    document.body.classList.contains(
+      "dark"
+    )
+  );
 
 }
 
-document
-  .getElementById("search")
-  .addEventListener("keypress", function(e) {
+window.addEventListener("load", () => {
 
-    if (e.key === "Enter") {
-      searchProduct();
-    }
+  if (
+    localStorage.getItem("darkMode")
+    === "true"
+  ) {
+    document.body.classList.add("dark");
+  }
 
-  });
+});
