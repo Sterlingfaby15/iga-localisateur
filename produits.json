@@ -1,0 +1,92 @@
+[
+  {
+    "upc": "317853041724",
+    "nom": "STMICHEL GALETTE AU CHOCOLAT",
+    "poids": "121 g",
+    "allee": "3",
+    "cote": "Droite",
+    "segment": "1",
+    "tablette": "2"
+  },
+  {
+    "upc": "6672102938",
+    "nom": "CADBURY FINGERS BISC ORIGINAUX",
+    "poids": "114 g",
+    "allee": "3",
+    "cote": "Droite",
+    "segment": "7",
+    "tablette": "44"
+  },
+  {
+    "upc": "931007202262",
+    "nom": "ARNOTTS TIM TAM BISCUIT ORIGINAL",
+    "poids": "200 g",
+    "allee": "3",
+    "cote": "Droite",
+    "segment": "7",
+    "tablette": "43"
+  },
+  {
+    "upc": "541012671601",
+    "nom": "LOTUS BISCOFF",
+    "poids": "250 g",
+    "allee": "3",
+    "cote": "Droite",
+    "segment": "7",
+    "tablette": "46"
+  },
+  {
+    "upc": "3904700140",
+    "nom": "WALKERS PURE BEURRE ROND",
+    "poids": "150 g",
+    "allee": "3",
+    "cote": "Droite",
+    "segment": "45",
+    "tablette": "45"
+  },
+  {
+    "upc": "317853041380",
+    "nom": "STMICHEL MADELEINES MINIS",
+    "poids": "250 g",
+    "allee": "3",
+    "cote": "Droite",
+    "segment": "7",
+    "tablette": "50"
+  },
+  {
+    "upc": "317853040793",
+    "nom": "STMICHEL MADELEINES PEPITES CHOC",
+    "poids": "175 g",
+    "allee": "3",
+    "cote": "Droite",
+    "segment": "7",
+    "tablette": "50"
+  },
+  {
+    "upc": "1410007985",
+    "nom": "PEPPFARM BISC SAUSALITO MAC",
+    "poids": "200 g",
+    "allee": "3",
+    "cote": "Droite",
+    "segment": "7",
+    "tablette": "50"
+  },
+  {
+    "upc": "5435811626",
+    "nom": "ANNAS SABLES FINS AMANDES",
+    "poids": "150 g",
+    "allee": "3",
+    "cote": "Droite",
+    "segment": "7",
+    "tablette": "50"
+  },
+  {
+    "upc": "6285810120",
+    "nom": "MILANO DOIGT DE DAME GEANTE",
+    "poids": "150 g",
+    "allee": "3",
+    "cote": "Droite",
+    "segment": "7",
+    "tablette": "44"
+  }
+]
