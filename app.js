@@ -1,53 +1,89 @@
 let produits = [];
 let scanner = null;
 
+/* =========================
+   Chargement du JSON
+========================= */
+
 fetch("produits.json")
   .then(response => response.json())
   .then(data => {
     produits = data;
+  })
+  .catch(error => {
+    console.error(
+      "Erreur chargement JSON :",
+      error
+    );
   });
+
+/* =========================
+   Normalisation accents
+========================= */
+
+function normalizeText(text){
+
+  return String(text || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim();
+
+}
+
+/* =========================
+   Recherche produit
+========================= */
 
 function searchProduct() {
 
   const recherche =
-    document
-      .getElementById("search")
-      .value
-      .toLowerCase()
-      .trim();
+    normalizeText(
+      document.getElementById("search").value
+    );
 
   const results =
     document.getElementById("results");
 
   results.innerHTML = "";
 
-  if (!recherche) return;
+  if (!recherche) {
+    return;
+  }
 
   const produitsTrouves =
     produits.filter(p => {
 
+      const nom =
+        normalizeText(p.nom);
+
+      const marque =
+        normalizeText(p.marque);
+
+      const categorie =
+        normalizeText(p.categorie);
+
+      const upc =
+        String(p.upc || "");
+
       return (
-        (p.nom || "")
-          .toLowerCase()
-          .includes(recherche)
+
+        nom.includes(recherche)
 
         ||
 
-        String(p.upc || "")
-          .includes(recherche)
+        marque.includes(recherche)
 
         ||
 
-        (p.marque || "")
-          .toLowerCase()
-          .includes(recherche)
+        categorie.includes(recherche)
 
         ||
 
-        (p.categorie || "")
-          .toLowerCase()
-          .includes(recherche)
+        upc.includes(recherche)
+
       );
+
     });
 
   if (produitsTrouves.length === 0) {
@@ -59,6 +95,7 @@ function searchProduct() {
     `;
 
     return;
+
   }
 
   produitsTrouves.forEach(p => {
@@ -69,6 +106,7 @@ function searchProduct() {
         : "➡️";
 
     results.innerHTML += `
+
       <div class="card">
 
         <h3>${p.nom}</h3>
@@ -96,15 +134,26 @@ function searchProduct() {
         </div>
 
       </div>
+
     `;
 
   });
 
 }
 
+/* =========================
+   Démarrer scanner
+========================= */
+
 async function startScanner() {
 
-  if (scanner) return;
+  if (scanner) {
+    return;
+  }
+
+  document.getElementById(
+    "stopBtn"
+  ).style.display = "block";
 
   scanner =
     new Html5Qrcode("reader");
@@ -112,16 +161,24 @@ async function startScanner() {
   try {
 
     await scanner.start(
-      { facingMode: "environment" },
+
       {
-        fps: 10,
-        qrbox: 250
+        facingMode: "environment"
       },
 
-      (code) => {
+      {
+        fps: 10,
+        qrbox: {
+          width: 250,
+          height: 250
+        }
+      },
 
-        document.getElementById("search").value =
-          code;
+      (decodedText) => {
+
+        document.getElementById(
+          "search"
+        ).value = decodedText;
 
         searchProduct();
 
@@ -134,6 +191,7 @@ async function startScanner() {
       },
 
       () => {}
+
     );
 
   } catch(error) {
@@ -144,28 +202,59 @@ async function startScanner() {
       "Impossible d'accéder à la caméra."
     );
 
+    stopScanner();
+
   }
 
 }
 
+/* =========================
+   Arrêter scanner
+========================= */
+
 async function stopScanner() {
 
-  if (!scanner) return;
+  if (!scanner) {
+
+    document.getElementById(
+      "stopBtn"
+    ).style.display = "none";
+
+    return;
+  }
 
   try {
 
     await scanner.stop();
     await scanner.clear();
 
-  } catch(e) {}
+  } catch(e) {
+
+    console.log(e);
+
+  }
 
   scanner = null;
 
+  document.getElementById(
+    "reader"
+  ).innerHTML = "";
+
+  document.getElementById(
+    "stopBtn"
+  ).style.display = "none";
+
 }
+
+/* =========================
+   Mode sombre
+========================= */
 
 function toggleTheme(){
 
-  document.body.classList.toggle("dark");
+  document.body.classList.toggle(
+    "dark"
+  );
 
   localStorage.setItem(
     "darkMode",
@@ -176,13 +265,48 @@ function toggleTheme(){
 
 }
 
-window.addEventListener("load", () => {
+/* =========================
+   Initialisation
+========================= */
 
-  if (
-    localStorage.getItem("darkMode")
-    === "true"
-  ) {
-    document.body.classList.add("dark");
+window.addEventListener(
+  "load",
+  () => {
+
+    if (
+      localStorage.getItem("darkMode")
+      === "true"
+    ) {
+
+      document.body.classList.add(
+        "dark"
+      );
+
+    }
+
   }
+);
 
-});
+/* =========================
+   Entrée = recherche
+========================= */
+
+document.addEventListener(
+  "DOMContentLoaded",
+  () => {
+
+    document
+      .getElementById("search")
+      .addEventListener(
+        "keypress",
+        function(e){
+
+          if(e.key === "Enter"){
+            searchProduct();
+          }
+
+        }
+      );
+
+  }
+);
