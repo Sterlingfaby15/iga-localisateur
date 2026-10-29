@@ -1,9 +1,13 @@
 let produits = [];
+let scanner = null;
 
 fetch("produits.json")
   .then(response => response.json())
   .then(data => {
     produits = data;
+  })
+  .catch(error => {
+    console.error("Erreur chargement JSON :", error);
   });
 
 function searchProduct() {
@@ -18,17 +22,22 @@ function searchProduct() {
 
   results.innerHTML = "";
 
-  if (recherche === "") {
+  if (!recherche) {
     return;
   }
 
   const produitsTrouves = produits.filter(p => {
 
+    const nom = (p.nom || "").toLowerCase();
+    const upc = String(p.upc || "");
+    const marque = (p.marque || "").toLowerCase();
+    const categorie = (p.categorie || "").toLowerCase();
+
     return (
-      p.nom.toLowerCase().includes(recherche) ||
-      p.upc.includes(recherche) ||
-      (p.marque && p.marque.toLowerCase().includes(recherche)) ||
-      (p.categorie && p.categorie.toLowerCase().includes(recherche))
+      nom.includes(recherche) ||
+      upc.includes(recherche) ||
+      marque.includes(recherche) ||
+      categorie.includes(recherche)
     );
 
   });
@@ -52,79 +61,126 @@ function searchProduct() {
         : "➡️";
 
     results.innerHTML += `
-
       <div class="card">
 
         <h3>${p.nom}</h3>
 
-        <div>
-          <strong>Marque :</strong>
-          ${p.marque || "-"}
+        <div class="marque">
+          🏷️ ${p.marque || "N/D"}
         </div>
 
-        <div>
-          <strong>Catégorie :</strong>
-          ${p.categorie || "-"}
-        </div>
-
-        <div>
-          <strong>UPC :</strong>
-          ${p.upc}
-        </div>
-
-        <div>
-          <strong>Format :</strong>
-          ${p.poids || "-"}
+        <div class="categorie">
+          ${p.categorie || "Non catégorisé"}
         </div>
 
         <div class="loc">
-          📍 ${direction} Allée ${p.allee}
+          ${direction}<br>
+          ALLÉE ${p.allee}
         </div>
 
         <div class="tablette">
-          📚 Tablette ${p.tablette}
+          📚 TABLETTE ${p.tablette}
+        </div>
+
+        <div class="upc">
+          UPC : ${p.upc}
         </div>
 
       </div>
-
     `;
 
   });
 
 }
 
-let scanner = null;
-
 async function startScanner() {
 
+  const reader = document.getElementById("reader");
+
   if (scanner) {
+
+    try {
+      await scanner.stop();
+      await scanner.clear();
+    } catch (e) {}
+
+    scanner = null;
+    reader.innerHTML = "";
     return;
+
   }
 
   scanner = new Html5Qrcode("reader");
 
-  await scanner.start(
-    { facingMode: "environment" },
-    {
-      fps: 10,
-      qrbox: 250
-    },
+  try {
 
-    (code) => {
+    await scanner.start(
+      {
+        facingMode: "environment"
+      },
+      {
+        fps: 10,
+        qrbox: {
+          width: 250,
+          height: 250
+        }
+      },
 
-      document.getElementById("search").value = code;
+      (decodedText) => {
 
-      searchProduct();
+        document.getElementById("search").value =
+          decodedText;
 
-      if (navigator.vibrate) {
-        navigator.vibrate(200);
-      }
+        searchProduct();
 
-      scanner.stop();
+        if ("vibrate" in navigator) {
+          navigator.vibrate(200);
+        }
 
-      scanner = null;
-    },
+        stopScanner();
 
-    () => {}
-  );
+      },
+
+      () => {}
+    );
+
+  } catch (error) {
+
+    console.error(error);
+
+    alert(
+      "Impossible d'accéder à la caméra."
+    );
+
+  }
+
 }
+
+async function stopScanner() {
+
+  if (!scanner) {
+    return;
+  }
+
+  try {
+
+    await scanner.stop();
+    await scanner.clear();
+
+  } catch (e) {}
+
+  scanner = null;
+
+  document.getElementById("reader").innerHTML = "";
+
+}
+
+document
+  .getElementById("search")
+  .addEventListener("keypress", function(e) {
+
+    if (e.key === "Enter") {
+      searchProduct();
+    }
+
+  });
