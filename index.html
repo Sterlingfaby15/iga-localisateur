@@ -1,27 +1,47 @@
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
 
 <meta charset="UTF-8">
 
-<meta name="viewport"
+<meta
+name="viewport"
 content="width=device-width, initial-scale=1.0">
 
-<title>Localisateur Produits IGA</title>
+<title>📍 Localisateur Produits IGA</title>
 
 <script src="https://unpkg.com/html5-qrcode"></script>
 
 <style>
 
+:root{
+    --iga-red:#d71920;
+    --bg:#f2f4f7;
+    --card:#ffffff;
+    --text:#111111;
+    --muted:#666666;
+}
+
+.dark{
+    --bg:#121212;
+    --card:#1f1f1f;
+    --text:#ffffff;
+    --muted:#bdbdbd;
+}
+
+*{
+    box-sizing:border-box;
+}
+
 body{
     margin:0;
+    background:var(--bg);
+    color:var(--text);
     font-family:-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif;
-    background:#f2f4f7;
 }
 
 .container{
-    max-width:800px;
+    max-width:900px;
     margin:auto;
     padding:15px;
 }
@@ -29,17 +49,17 @@ body{
 h1{
     text-align:center;
     color:#d71920;
-    font-size:30px;
 }
 
 .orientation-info{
-    background:white;
+    background:var(--card);
+    color:var(--text);
     border-left:6px solid #d71920;
     border-radius:16px;
     padding:15px;
-    margin-bottom:15px;
-    box-shadow:0 2px 8px rgba(0,0,0,.08);
     text-align:center;
+    margin-bottom:15px;
+    box-shadow:0 2px 10px rgba(0,0,0,.08);
     font-weight:700;
 }
 
@@ -54,76 +74,80 @@ input{
     padding:16px;
     border:none;
     border-radius:16px;
+    background:var(--card);
+    color:var(--text);
     font-size:18px;
     box-shadow:0 2px 8px rgba(0,0,0,.08);
 }
 
 button{
+    border:none;
+    padding:16px;
+    border-radius:16px;
     background:#d71920;
     color:white;
-    border:none;
-    border-radius:16px;
-    padding:16px;
     font-size:18px;
     font-weight:bold;
 }
 
 .card{
-    background:white;
+    background:var(--card);
     border-radius:20px;
     padding:18px;
-    margin-bottom:14px;
+    margin-bottom:15px;
     box-shadow:0 4px 15px rgba(0,0,0,.08);
 }
 
 .card h3{
-    margin:0 0 10px 0;
-    font-size:22px;
-    color:#111;
+    margin:0 0 10px;
+    color:var(--text);
 }
 
 .marque{
-    color:#666;
+    color:var(--muted);
     margin-bottom:8px;
 }
 
 .categorie{
     display:inline-block;
-    background:#eef1f4;
-    border-radius:50px;
+    background:#ececec;
+    color:#000;
     padding:6px 12px;
-    margin-bottom:15px;
-    font-weight:600;
+    border-radius:999px;
+    font-size:14px;
+    font-weight:bold;
+    margin-bottom:12px;
 }
 
 .loc{
     background:#d71920;
     color:white;
+    border-radius:16px;
     text-align:center;
-    border-radius:14px;
-    padding:14px;
-    margin-top:12px;
+    padding:16px;
+    margin-top:10px;
     font-size:30px;
     font-weight:900;
 }
 
 .tablette{
-    background:#f5f5f5;
+    background:var(--bg);
+    color:var(--text);
     text-align:center;
-    border-radius:14px;
-    padding:12px;
-    margin-top:10px;
+    border-radius:16px;
+    padding:14px;
     font-size:22px;
     font-weight:bold;
+    margin-top:10px;
 }
 
 .upc{
     margin-top:12px;
-    color:#666;
-    font-size:14px;
+    color:var(--muted);
 }
 
 #reader{
+    margin-top:15px;
     margin-bottom:15px;
 }
 
@@ -156,12 +180,14 @@ Les côtés sont toujours indiqués à partir du devant du magasin.
 <input
 id="search"
 type="text"
-placeholder="Nom, UPC, marque..."
+placeholder="Nom, UPC, Marque..."
 onkeyup="searchProduct()">
 
-<button onclick="startScanner()">
-📷
-</button>
+<button onclick="searchProduct()">🔍</button>
+
+<button onclick="startScanner()">📷</button>
+
+<button onclick="toggleTheme()">🌙</button>
 
 </div>
 
