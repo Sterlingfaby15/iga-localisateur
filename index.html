@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
 
 <meta charset="UTF-8">
 
-<meta
-name="viewport"
+<meta name="viewport"
 content="width=device-width, initial-scale=1.0">
 
 <title>📍 Localisateur Produits IGA</title>
@@ -37,7 +37,7 @@ body{
     margin:0;
     background:var(--bg);
     color:var(--text);
-    font-family:-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
 }
 
 .container{
@@ -49,6 +49,7 @@ body{
 h1{
     text-align:center;
     color:#d71920;
+    margin-bottom:15px;
 }
 
 .orientation-info{
@@ -65,7 +66,7 @@ h1{
 
 .search-box{
     display:flex;
-    gap:10px;
+    gap:8px;
     margin-bottom:15px;
 }
 
@@ -84,10 +85,26 @@ button{
     border:none;
     padding:16px;
     border-radius:16px;
-    background:#d71920;
     color:white;
     font-size:18px;
     font-weight:bold;
+    cursor:pointer;
+}
+
+.search-btn{
+    background:#0d6efd;
+}
+
+.scan-btn{
+    background:#198754;
+}
+
+.stop-btn{
+    background:#444;
+}
+
+.theme-btn{
+    background:#d71920;
 }
 
 .card{
@@ -101,6 +118,7 @@ button{
 .card h3{
     margin:0 0 10px;
     color:var(--text);
+    font-size:22px;
 }
 
 .marque{
@@ -111,7 +129,7 @@ button{
 .categorie{
     display:inline-block;
     background:#ececec;
-    color:#000;
+    color:black;
     padding:6px 12px;
     border-radius:999px;
     font-size:14px;
@@ -151,6 +169,22 @@ button{
     margin-bottom:15px;
 }
 
+@media(max-width:700px){
+
+    .search-box{
+        flex-wrap:wrap;
+    }
+
+    button{
+        flex:1;
+    }
+
+    .loc{
+        font-size:24px;
+    }
+
+}
+
 </style>
 
 </head>
@@ -162,10 +196,6 @@ button{
 <h1>📍 Localisateur Produits IGA</h1>
 
 <div class="orientation-info">
-
-🚪 Entrée principale du magasin
-
-<br><br>
 
 ⬅️ Gauche | Droite ➡️
 
@@ -183,11 +213,31 @@ type="text"
 placeholder="Nom, UPC, Marque..."
 onkeyup="searchProduct()">
 
-<button onclick="searchProduct()">🔍</button>
+<button
+class="search-btn"
+onclick="searchProduct()">
+🔍
+</button>
 
-<button onclick="startScanner()">📷</button>
+<button
+class="scan-btn"
+onclick="startScanner()">
+📷
+</button>
 
-<button onclick="toggleTheme()">🌙</button>
+<button
+id="stopBtn"
+class="stop-btn"
+style="display:none"
+onclick="stopScanner()">
+🛑
+</button>
+
+<button
+class="theme-btn"
+onclick="toggleTheme()">
+🌙
+</button>
 
 </div>
 
